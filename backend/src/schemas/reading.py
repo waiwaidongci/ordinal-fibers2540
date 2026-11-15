@@ -8,4 +8,5 @@ class ReadingInput(BaseModel):
 class ReadingOut(ReadingInput):
     grade:float
     id:int
+    quality:dict=Field(default_factory=dict)
     model_config=ConfigDict(from_attributes=True)

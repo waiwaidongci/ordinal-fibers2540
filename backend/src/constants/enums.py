@@ -5,3 +5,7 @@ class RunStatus(StrEnum):
     QUEUED='queued'; RUNNING='running'; COMPLETED='completed'; FAILED='failed'
 class NoteStatus(StrEnum):
     DRAFT='draft'; APPROVED='approved'; REJECTED='rejected'
+class NoticeStatus(StrEnum):
+    ACTIVE='active'; REVOKED='revoked'
+class BasisStatus(StrEnum):
+    CURRENT='current'; INVALIDATED='invalidated'

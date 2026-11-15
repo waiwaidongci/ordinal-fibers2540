@@ -14,4 +14,5 @@ class NoteOut(NoteInput):
     reviewer_note:str
     reviewed_by:str
     created_at:datetime
+    quality:dict=Field(default_factory=dict)
     model_config=ConfigDict(from_attributes=True)

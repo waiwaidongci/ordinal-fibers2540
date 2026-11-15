@@ -100,3 +100,65 @@ CREATE TABLE grade_readings (
 )
 
 ;
+
+CREATE TABLE quality_locks (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	note VARCHAR(80) NOT NULL,
+	PRIMARY KEY (id)
+) ;
+
+INSERT INTO quality_locks (id, note) VALUES (1, 'quality-basis-serialization');
+
+CREATE TABLE quality_notices (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	title VARCHAR(160) NOT NULL,
+	reason VARCHAR(1000) NOT NULL,
+	items JSON NOT NULL,
+	status VARCHAR(20) NOT NULL,
+	issued_by VARCHAR(140) NOT NULL,
+	created_at DATETIME NOT NULL,
+	revoked_by VARCHAR(140) NOT NULL,
+	revocation_reason VARCHAR(1000) NOT NULL,
+	revoked_at DATETIME,
+	PRIMARY KEY (id)
+) ;
+CREATE INDEX ix_quality_notices_status ON quality_notices (status);
+
+CREATE TABLE run_quality_bases (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	run_id INTEGER NOT NULL,
+	study_id INTEGER NOT NULL,
+	basis_status VARCHAR(20) NOT NULL,
+	exclusion_count INTEGER NOT NULL,
+	exclusion_fingerprint VARCHAR(64) NOT NULL,
+	applied_notice_ids JSON NOT NULL,
+	invalidated_by_notice_ids JSON NOT NULL,
+	invalidated_reason VARCHAR(1000) NOT NULL,
+	invalidated_by VARCHAR(140) NOT NULL,
+	invalidated_at DATETIME,
+	created_at DATETIME NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (run_id),
+	FOREIGN KEY(run_id) REFERENCES rank_test_runs (id),
+	FOREIGN KEY(study_id) REFERENCES grade_studies (id)
+) ;
+CREATE INDEX ix_run_quality_bases_study ON run_quality_bases (study_id);
+
+CREATE TABLE specimen_exclusions (
+	id INTEGER NOT NULL AUTO_INCREMENT,
+	run_id INTEGER NOT NULL,
+	study_id INTEGER NOT NULL,
+	specimen_code VARCHAR(60) NOT NULL,
+	treatment_code VARCHAR(40) NOT NULL,
+	treatment_name VARCHAR(100) NOT NULL,
+	grade DOUBLE NOT NULL,
+	notice_ids JSON NOT NULL,
+	notice_titles JSON NOT NULL,
+	reason VARCHAR(1000) NOT NULL,
+	created_at DATETIME NOT NULL,
+	PRIMARY KEY (id),
+	UNIQUE (run_id, specimen_code),
+	FOREIGN KEY(run_id) REFERENCES rank_test_runs (id),
+	FOREIGN KEY(study_id) REFERENCES grade_studies (id)
+) ;
+CREATE INDEX ix_specimen_exclusions_run ON specimen_exclusions (run_id);

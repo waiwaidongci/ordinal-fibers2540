@@ -7,7 +7,9 @@ from src.config.settings import REDIS_URL
 from src.models import RankTestRun
 from src.constants.enums import RunStatus
 from src.services.run_service import execute_run
+from src.services.quality_service import ensure_quality_lock
 redis=Redis.from_url(REDIS_URL)
+with Session() as db:ensure_quality_lock(db)
 while True:
     Path('/tmp/heartbeat').touch()
     with Session() as db:
